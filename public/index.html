@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow — Productivity Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- App Shell -->
+  <div class="app-layout" id="appLayout">
+    
+    <!-- Mobile Header -->
+    <header class="mobile-topbar" id="mobileTopbar">
+      <button class="icon-btn-ghost" id="mobileMenuBtn" aria-label="Abrir menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <div class="brand-cluster">
+        <div class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect width="24" height="24" rx="6" fill="#4648d4"/>
+            <path d="M7 12.5L10.5 16L17 8.5" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="brand-name">TaskFlow</span>
+        <span class="badge-pro">PRO</span>
+      </div>
+      <button class="primary-btn-sm" id="mobileAddBtn">+ Novo</button>
+    </header>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Workspace Brand -->
+      <div class="sidebar-header">
+        <div class="brand-cluster">
+          <div class="brand-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect width="24" height="24" rx="6" fill="#4648d4"/>
+              <path d="M7 12.5L10.5 16L17 8.5" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="brand-text-row">
+            <span class="brand-name">TaskFlow</span>
+            <span class="badge-pro">PRO</span>
+          </div>
+          <button class="icon-btn-xs" aria-label="Selecionar Workspace">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Add Action -->
+      <div class="sidebar-quick-action">
+        <button class="quick-add-btn" id="btnQuickAdd">
+          <span class="quick-add-content">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Quick Add</span>
+          </span>
+          <span class="kbd-shortcut">N</span>
+        </button>
+      </div>
+
+      <!-- Navigation Primary Links -->
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="nav-item active" data-nav="dashboard">
+          <div class="nav-item-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>
+            <span>Dashboard</span>
+          </div>
+        </a>
+
+        <a href="#my-tasks" class="nav-item" data-nav="my-tasks">
+          <div class="nav-item-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M9 12l2 2 4-4"/></svg>
+            <span>My Tasks</span>
+          </div>
+          <span class="nav-counter" id="countMyTasks">12</span>
+        </a>
+
+        <a href="#today" class="nav-item" data-nav="today">
+          <div class="nav-item-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>Today</span>
+          </div>
+          <span class="nav-counter" id="countToday">5</span>
+        </a>
+
+        <a href="#upcoming" class="nav-item" data-nav="upcoming">
+          <div class="nav-item-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="8" y1="14" x2="8.01" y2="14"></line><line x1="12" y1="14" x2="12.01" y2="14"></line><line x1="16" y1="14" x2="16.01" y2="14"></line></svg>
+            <span>Upcoming</span>
+          </div>
+          <span class="nav-counter" id="countUpcoming">7</span>
+        </a>
+
+        <a href="#completed" class="nav-item" data-nav="completed">
+          <div class="nav-item-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span>Completed</span>
+          </div>
+        </a>
+
+        <!-- Projects Header -->
+        <div class="nav-section-header">
+          <span>PROJECTS</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+
+        <div class="project-links">
+          <a href="#project-product-roadmap" class="nav-subitem" data-nav="project" data-project="Product Roadmap">
+            <span class="project-dot dot-roadmap"></span>
+            <span>Product Roadmap</span>
+          </a>
+          <a href="#project-marketing-launch" class="nav-subitem" data-nav="project" data-project="Marketing Launch">
+            <span class="project-dot dot-marketing"></span>
+            <span>Marketing Launch</span>
+          </a>
+          <a href="#project-engineering-sprint" class="nav-subitem" data-nav="project" data-project="Engineering Sprint">
+            <span class="project-dot dot-engineering"></span>
+            <span>Engineering Sprint</span>
+          </a>
+          <a href="#project-personal-goals" class="nav-subitem" data-nav="project" data-project="Personal Goals">
+            <span class="project-dot dot-personal"></span>
+            <span>Personal Goals</span>
+          </a>
+          <button class="add-project-btn" id="btnAddProject">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Add Project</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Sidebar User Profile Footer -->
+      <div class="sidebar-user-footer">
+        <div class="user-row">
+          <div class="user-avatar-wrap">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Alex Morgan" class="user-avatar" id="sidebarAvatar">
+            <span class="user-status-dot"></span>
+          </div>
+          <div class="user-meta">
+            <span class="user-name">Alex Morgan</span>
+            <span class="user-email">alex@taskflow.io</span>
+          </div>
+          <button class="icon-btn-xs" aria-label="Settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+        <div class="workspace-pill-row">
+          <div class="workspace-pill">
+            <span class="workspace-dot"></span>
+            <span>Acme Workspace</span>
+          </div>
+          <button class="icon-btn-xs" aria-label="Switch Workspace">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3L4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT VIEWPORT -->
+    <main class="main-viewport">
+      
+      <!-- Top Search & Actions Bar -->
+      <div class="top-nav-bar">
+        <div class="search-field-container">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="top-search-input" id="topSearchInput" placeholder="Search tasks, projects, or tags..." autocomplete="off">
+          <span class="search-kbd-badge">⌘K</span>
+        </div>
+
+        <div class="top-actions-right">
+          <div class="view-mode-buttons">
+            <button class="view-icon-btn active" title="List View" aria-label="List View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            </button>
+            <button class="view-icon-btn" title="Board View" aria-label="Board View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"></rect><rect x="14" y="3" width="7" height="18" rx="1"></rect></svg>
+            </button>
+          </div>
+
+          <button class="icon-btn-top" aria-label="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-indicator"></span>
+          </button>
+
+          <button class="icon-btn-top" aria-label="Help">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </button>
+
+          <button class="btn-primary-header" id="btnHeaderNewTask">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>New Task</span>
+          </button>
+
+          <div class="user-avatar-top">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Alex Morgan">
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 1: DASHBOARD VIEW (Default) -->
+      <div class="view-panel active" id="viewDashboard">
+        <div class="dashboard-grid-layout">
+          
+          <!-- Left Main Column (Greeting, KPI cards, Filter tabs, Task List, Bottom Add Bar) -->
+          <div class="dashboard-main-col">
+            
+            <!-- Dashboard Welcome Header -->
+            <div class="dashboard-greeting-header">
+              <div class="greeting-left">
+                <h1 class="greeting-title">Good afternoon, Alex! 👋</h1>
+                <div class="greeting-subtext">
+                  <span class="date-stamp" id="currentDateStamp">Wednesday, October 24</span>
+                  <span class="bullet-sep">•</span>
+                  <span class="subtext-count">You have <strong id="greetingPendingCount">5 tasks scheduled</strong> for today</span>
+                  <span class="badge-priority-banner" id="greetingPriorityBadge">2 high priority</span>
+                </div>
+              </div>
+
+              <div class="greeting-right-controls">
+                <div class="segmented-view-group">
+                  <button class="segment-btn active">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    <span>List</span>
+                  </button>
+                  <button class="segment-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"></rect><rect x="14" y="3" width="7" height="18" rx="1"></rect></svg>
+                    <span>Board</span>
+                  </button>
+                  <button class="segment-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+                    <span>Timeline</span>
+                  </button>
+                </div>
+
+                <div class="dropdown-filter-date">
+                  <button class="filter-dropdown-btn" id="filterDropdownBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span id="dateFilterLabel">Today</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </button>
+                </div>
+
+                <button class="btn-primary-purple" id="btnDashboardNewTask">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>New Task</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- KPI Metric Stat Cards (4 columns) -->
+            <div class="kpi-metrics-row">
+              <!-- KPI 1: Total Tasks -->
+              <div class="kpi-stat-card">
+                <div class="kpi-card-top">
+                  <span class="kpi-card-label">Total Tasks</span>
+                  <div class="kpi-icon-bubble bubble-purple">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4648d4" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="7" x2="16" y2="7"></line><line x1="8" y1="11" x2="16" y2="11"></line><line x1="8" y1="15" x2="12" y2="15"></line></svg>
+                  </div>
+                </div>
+                <div class="kpi-card-bottom">
+                  <div class="kpi-big-number-row">
+                    <span class="kpi-number" id="kpiTotalNum">24</span>
+                    <span class="kpi-unit">total</span>
+                  </div>
+                  <span class="kpi-pill pill-indigo">↗ +3 this week</span>
+                </div>
+              </div>
+
+              <!-- KPI 2: Completed -->
+              <div class="kpi-stat-card">
+                <div class="kpi-card-top">
+                  <span class="kpi-card-label">Completed</span>
+                  <div class="kpi-icon-bubble bubble-green">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00885d" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                </div>
+                <div class="kpi-card-bottom">
+                  <div class="kpi-big-number-row">
+                    <span class="kpi-number" id="kpiCompletedNum">14</span>
+                    <span class="kpi-unit">finished</span>
+                  </div>
+                  <div class="kpi-completion-badge">
+                    <span id="kpiCompletionPct">58%</span>
+                    <span>completion</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- KPI 3: Pending Active -->
+              <div class="kpi-stat-card">
+                <div class="kpi-card-top">
+                  <span class="kpi-card-label">Pending Active</span>
+                  <div class="kpi-icon-bubble bubble-blue">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4648d4" stroke-width="2"><path d="M5 22h14M5 2h14M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>
+                  </div>
+                </div>
+                <div class="kpi-card-bottom">
+                  <div class="kpi-big-number-row">
+                    <span class="kpi-number" id="kpiPendingNum">8</span>
+                    <span class="kpi-unit">active</span>
+                  </div>
+                  <span class="kpi-pill pill-lavender" id="kpiInProgressText">3 in progress</span>
+                </div>
+              </div>
+
+              <!-- KPI 4: Overdue -->
+              <div class="kpi-stat-card">
+                <div class="kpi-card-top">
+                  <span class="kpi-card-label">Overdue</span>
+                  <div class="kpi-icon-bubble bubble-red">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ba1a1a" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  </div>
+                </div>
+                <div class="kpi-card-bottom">
+                  <div class="kpi-big-number-row">
+                    <span class="kpi-number" id="kpiOverdueNum">2</span>
+                    <span class="kpi-unit">overdue</span>
+                  </div>
+                  <span class="kpi-pill pill-alert">Needs attention</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task List Filter Bar -->
+            <div class="task-list-filter-bar">
+              <div class="filter-tab-buttons">
+                <button class="filter-tab-btn active" data-filter="all">
+                  <span>All Tasks</span>
+                  <span class="filter-badge" id="badgeAllCount">8</span>
+                </button>
+                <button class="filter-tab-btn" data-filter="today">
+                  <span>Today</span>
+                  <span class="filter-badge" id="badgeTodayCount">5</span>
+                </button>
+                <button class="filter-tab-btn" data-filter="upcoming">
+                  <span>Upcoming</span>
+                  <span class="filter-badge" id="badgeUpcomingCount">7</span>
+                </button>
+                <button class="filter-tab-btn" data-filter="completed">
+                  <span>Completed</span>
+                  <span class="filter-badge" id="badgeCompletedCount">14</span>
+                </button>
+              </div>
+
+              <div class="filter-inputs-right">
+                <div class="search-tasks-wrapper">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="taskListSearchInput" placeholder="Filter tasks..." autocomplete="off">
+                </div>
+
+                <div class="sort-selector-wrapper">
+                  <button class="sort-dropdown-btn" id="sortDropdownBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4l4 4M17 8v12M17 20l4-4M17 20l-4-4"/></svg>
+                    <span id="sortCurrentLabel">Due Date</span>
+                  </button>
+                </div>
+
+                <button class="filter-icon-btn" id="btnToggleAdvancedFilter" aria-label="Toggle Advanced Filters">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- TASK CARDS STREAM LIST -->
+            <div class="task-stream-container" id="dashboardTaskStream">
+              <!-- Dynamically populated from JS -->
+            </div>
+
+            <!-- Bottom Inline Quick-Add Task Bar -->
+            <div class="bottom-quick-bar" id="bottomQuickBar">
+              <div class="quick-bar-left">
+                <button class="plus-circle-btn" id="btnQuickBarAdd" aria-label="Add Task">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                </button>
+                <input type="text" class="quick-bar-input" id="quickBarInput" placeholder="+ Add new task... (Press Enter to save)">
+              </div>
+              <div class="quick-bar-right-controls">
+                <button class="quick-tool-btn" title="Due Date" aria-label="Definir Data">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </button>
+                <button class="quick-tool-btn" title="Priority" aria-label="Definir Prioridade">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                </button>
+                <button class="quick-tool-btn" title="Category / Project" aria-label="Definir Projeto">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                </button>
+                <span class="enter-badge">↵ ENTER</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Sidebar Widgets Column (Daily Productivity, Focus Schedule, Upcoming Deadlines, Pro Tip) -->
+          <div class="dashboard-widgets-col">
+            
+            <!-- Daily Productivity Widget -->
+            <div class="widget-card widget-daily-prod">
+              <div class="widget-header-row">
+                <span class="widget-title">Daily Productivity</span>
+                <span class="streak-pill">🔥 6-day streak</span>
+              </div>
+              <div class="productivity-content-row">
+                <div class="radial-progress-wrap">
+                  <svg class="radial-svg" width="84" height="84" viewBox="0 0 84 84">
+                    <circle class="radial-track" cx="42" cy="42" r="34" stroke-width="7" fill="none"/>
+                    <circle class="radial-fill" id="productivityRadialFill" cx="42" cy="42" r="34" stroke-width="7" fill="none" stroke-dasharray="213.6" stroke-dashoffset="59.8"/>
+                  </svg>
+                  <span class="radial-percentage-text" id="radialPercentageText">72%</span>
+                </div>
+                <div class="radial-caption-col">
+                  <span class="prod-headline" id="prodGoalsDoneText">4 of 6 goals done</span>
+                  <p class="prod-subtext">Outstanding momentum today. 2 more tasks to hit your daily velocity target.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Focus Schedule Widget -->
+            <div class="widget-card widget-focus-schedule">
+              <div class="widget-header-row">
+                <span class="widget-title">Focus Schedule</span>
+                <a href="#gcal" class="link-subtle-blue">Google Cal</a>
+              </div>
+              <div class="schedule-items-list">
+                <div class="schedule-item">
+                  <div class="schedule-time-badge badge-lavender">
+                    <span class="time-main">1:00</span>
+                    <span class="time-ampm">PM</span>
+                  </div>
+                  <div class="schedule-info">
+                    <span class="schedule-name">Deep Focus: Roadmap Specs</span>
+                    <span class="schedule-meta">1:00 PM – 2:00 PM • Solo block</span>
+                  </div>
+                  <span class="schedule-dot dot-roadmap"></span>
+                </div>
+
+                <div class="schedule-item">
+                  <div class="schedule-time-badge badge-lavender">
+                    <span class="time-main">2:30</span>
+                    <span class="time-ampm">PM</span>
+                  </div>
+                  <div class="schedule-info">
+                    <span class="schedule-name">Design System Sync</span>
+                    <span class="schedule-meta">2:30 PM – 3:15 PM • Google Meet</span>
+                  </div>
+                  <span class="schedule-dot dot-roadmap"></span>
+                </div>
+
+                <div class="schedule-item">
+                  <div class="schedule-time-badge badge-mint">
+                    <span class="time-main">4:00</span>
+                    <span class="time-ampm">PM</span>
+                  </div>
+                  <div class="schedule-info">
+                    <span class="schedule-name">Engineering Sprint Review</span>
+                    <span class="schedule-meta">4:00 PM – 4:45 PM • Room 4B / Zoom</span>
+                  </div>
+                  <span class="schedule-dot dot-engineering"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Deadlines Widget -->
+            <div class="widget-card widget-upcoming-deadlines">
+              <div class="widget-header-row">
+                <span class="widget-title">Upcoming Deadlines</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </div>
+              <div class="deadlines-list">
+                <div class="deadline-item">
+                  <div class="deadline-left">
+                    <span class="deadline-dot dot-red"></span>
+                    <span class="deadline-title">Marketing Asset Delivery</span>
+                  </div>
+                  <span class="deadline-due due-urgent">Tomorrow</span>
+                </div>
+                <div class="deadline-item">
+                  <div class="deadline-left">
+                    <span class="deadline-dot dot-blue"></span>
+                    <span class="deadline-title">API v2 Deprecation Notice</span>
+                  </div>
+                  <span class="deadline-due">In 3 days</span>
+                </div>
+                <div class="deadline-item">
+                  <div class="deadline-left">
+                    <span class="deadline-dot dot-green"></span>
+                    <span class="deadline-title">Security Penetration Report</span>
+                  </div>
+                  <span class="deadline-due">Nov 02</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pro Tip Widget -->
+            <div class="widget-card widget-pro-tip">
+              <div class="pro-tip-header">
+                <div class="bulb-icon-wrap">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6h8c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z"/></svg>
+                </div>
+                <span class="pro-tip-tag">PRO TIP</span>
+              </div>
+              <p class="pro-tip-text">Time-blocking high-priority tasks in the morning improves completion rates by <strong>34%</strong> and mitigates cognitive context switching.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: COMPLETED VIEW (Completo.png) -->
+      <div class="view-panel" id="viewCompleted">
+        <div class="dashboard-grid-layout">
+          <!-- Main Left Column -->
+          <div class="completed-main-col">
+            
+            <!-- Completed Header -->
+            <div class="completed-header-block">
+              <div class="completed-title-row">
+                <div class="check-title-group">
+                  <div class="check-emerald-circle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <h1 class="completed-page-heading">Completed Tasks</h1>
+                  <span class="badge-pill-green">100% TODAY</span>
+                </div>
+
+                <div class="completed-header-actions">
+                  <div class="segmented-view-group">
+                    <button class="segment-btn active">Today & This Week</button>
+                    <button class="segment-btn">This Month</button>
+                    <button class="segment-btn">All Time</button>
+                  </div>
+                  <button class="btn-clear-archive" id="btnClearArchive">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Clear Archive</span>
+                  </button>
+                  <button class="btn-primary-purple" id="btnCompletedNewTask">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>New Task</span>
+                  </button>
+                </div>
+              </div>
+
+              <p class="completed-subtitle">
+                <strong id="completedTotalWeekText">14 tasks</strong> completed this week • All scheduled priorities finished ahead of time!
+              </p>
+            </div>
+
+            <!-- Hero Celebration Card ("All Caught Up! You're an absolute rockstar 🥳") -->
+            <div class="rockstar-celebration-card">
+              <div class="celebration-badge-wrap">
+                <div class="outer-confetti-circle">
+                  <div class="celebration-green-disk">
+                    <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <span class="confetti-dec dec-1">🎉</span>
+                  <span class="confetti-dec dec-2">✨</span>
+                  <span class="confetti-dec dec-3">🎊</span>
+                  <span class="confetti-dec dec-4">✨</span>
+                </div>
+              </div>
+
+              <h2 class="celebration-headline">All Caught Up! You're an absolute rockstar 🥳</h2>
+              <p class="celebration-description">You've crushed all scheduled tasks for today. Take a well-deserved breather, grab a coffee, or queue up priorities for tomorrow.</p>
+
+              <div class="celebration-buttons-row">
+                <button class="btn-primary-purple btn-large-glow" id="btnPlanTomorrow">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+                  <span>+ Plan Tomorrow's Tasks</span>
+                </button>
+                <button class="btn-outline-white" id="btnViewProductivityReport">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                  <span>View Weekly Productivity Report</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Completed Earlier Today Section -->
+            <div class="completed-list-section">
+              <div class="completed-section-header">
+                <div class="sec-left">
+                  <span class="sec-title">Completed Earlier Today</span>
+                  <span class="sec-badge" id="completedEarlierCount">5 tasks</span>
+                </div>
+                <div class="sec-right">
+                  <span class="dot-sync-green"></span>
+                  <span class="sec-sync-text">Auto-archived to local storage</span>
+                </div>
+              </div>
+
+              <!-- List of completed items -->
+              <div class="completed-items-stream" id="completedItemsStream">
+                <!-- Populated dynamically -->
+              </div>
+
+              <div class="completed-stream-footer">
+                <div class="cs-footer-left">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  <span>Showing tasks finished within past 24 hours</span>
+                </div>
+                <button class="link-btn-subtle" id="btnExportCSV">Export audit CSV</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Completed View Right Widgets -->
+          <div class="completed-widgets-col">
+            
+            <!-- Momentum Widget Card -->
+            <div class="widget-card widget-momentum-card">
+              <div class="momentum-top">
+                <div>
+                  <span class="momentum-tag">MOMENTUM</span>
+                  <h3 class="momentum-title">7-Day Streak Active</h3>
+                </div>
+                <div class="momentum-icon-circle">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2"><path d="M12 2c0 4-4 6-4 10a6 6 0 0 0 12 0c0-4-4-6-4-10z"></path></svg>
+                </div>
+              </div>
+              <p class="momentum-subtext">🔥 You've hit 100% of your daily commitments 7 days straight!</p>
+            </div>
+
+            <!-- Weekly Summary Widget -->
+            <div class="widget-card widget-weekly-summary">
+              <div class="widget-header-row">
+                <span class="widget-title">Weekly Summary</span>
+                <span class="badge-subtle-gray">Mon - Sun</span>
+              </div>
+              <div class="weekly-metrics-pair">
+                <div class="metric-block-gray">
+                  <span class="mb-label">Completed</span>
+                  <span class="mb-val" id="summaryCompletedVal">28</span>
+                  <span class="mb-pill-green">↗ +14% vs last week</span>
+                </div>
+                <div class="metric-block-gray">
+                  <span class="mb-label">Overdue</span>
+                  <span class="mb-val" id="summaryOverdueVal">0</span>
+                  <span class="mb-pill-green">✓ Flawless execution</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Productivity Score Widget -->
+            <div class="widget-card widget-productivity-score">
+              <div class="score-card-layout">
+                <div class="score-left">
+                  <span class="score-label">PRODUCTIVITY SCORE</span>
+                  <div class="score-big" id="scoreBigVal">98%</div>
+                  <p class="score-subtext">Top 2% among TaskFlow workspaces</p>
+                </div>
+                <div class="score-badge-circle">
+                  <span>98</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Velocity By Day Widget -->
+            <div class="widget-card widget-velocity-chart">
+              <div class="widget-header-row">
+                <span class="widget-title">Velocity by day</span>
+                <span class="text-subtle-sm">Avg 5.6 tasks/day</span>
+              </div>
+              <div class="velocity-bars-row">
+                <div class="vbar-col"><div class="vbar h-50"></div><span>M</span></div>
+                <div class="vbar-col"><div class="vbar h-70"></div><span>T</span></div>
+                <div class="vbar-col"><div class="vbar h-85"></div><span>W</span></div>
+                <div class="vbar-col"><div class="vbar h-85"></div><span>T</span></div>
+                <div class="vbar-col"><div class="vbar h-100 vbar-active"></div><span class="font-bold">F</span></div>
+                <div class="vbar-col"><div class="vbar h-20"></div><span>S</span></div>
+                <div class="vbar-col"><div class="vbar h-20"></div><span>S</span></div>
+              </div>
+            </div>
+
+            <!-- Distribution By Project -->
+            <div class="widget-card widget-distribution">
+              <span class="widget-title mb-3">DISTRIBUTION BY PROJECT</span>
+              <div class="dist-list">
+                <div class="dist-row">
+                  <div class="dist-left"><span class="project-dot dot-engineering"></span><span>Engineering Sprint</span></div>
+                  <span class="dist-val">12</span>
+                </div>
+                <div class="dist-row">
+                  <div class="dist-left"><span class="project-dot dot-marketing"></span><span>Marketing Launch</span></div>
+                  <span class="dist-val">8</span>
+                </div>
+                <div class="dist-row">
+                  <div class="dist-left"><span class="project-dot dot-roadmap"></span><span>Product Roadmap</span></div>
+                  <span class="dist-val">5</span>
+                </div>
+                <div class="dist-row">
+                  <div class="dist-left"><span class="project-dot dot-personal"></span><span>Personal Goals & Other</span></div>
+                  <span class="dist-val">3</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quote Card -->
+            <div class="widget-card widget-quote-card">
+              <div class="quote-sign">99</div>
+              <p class="quote-body">"Focus is a muscle. Finishing every single daily target compounds into extraordinary leverage."</p>
+              <span class="quote-author">— TaskFlow Daily Digest</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: PROJECT / EDITOR VIEW (Editor.png) -->
+      <div class="view-panel" id="viewEditor">
+        <div class="editor-split-layout">
+          
+          <!-- Left List Pane -->
+          <div class="editor-left-pane">
+            <!-- Project Breadcrumb & Title -->
+            <div class="editor-page-header">
+              <div class="editor-crumb">PROJECTS / <strong id="editorCrumbProject">PRODUCT ROADMAP</strong></div>
+              <div class="editor-title-row">
+                <div class="editor-title-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4648d4" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <h1 class="editor-main-title" id="editorProjectTitle">Q4 Strategic Execution Plan</h1>
+              </div>
+
+              <div class="editor-subbar">
+                <div class="editor-badge-group">
+                  <span class="badge-sprint">Sprint 42</span>
+                  <span class="badge-sprint-green">82% on track</span>
+                </div>
+                <div class="editor-filter-actions">
+                  <button class="btn-outline-sm" id="btnEditorFilter">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    <span>Filter</span>
+                  </button>
+                  <button class="btn-outline-sm" id="btnEditorSort">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4l4 4M17 8v12M17 20l4-4M17 20l-4-4"/></svg>
+                    <span>Sort</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini KPI Triplets -->
+            <div class="editor-mini-kpi-row">
+              <div class="mini-kpi-card">
+                <div class="mini-kpi-top">
+                  <span class="mini-label">IN PROGRESS TASKS</span>
+                  <div class="mini-icon-circle icon-circle-lavender">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4648d4" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  </div>
+                </div>
+                <div class="mini-kpi-val"><strong id="editorMiniInProgressNum">7</strong> <span class="sub">/ 12 active</span></div>
+              </div>
+
+              <div class="mini-kpi-card">
+                <div class="mini-kpi-top">
+                  <span class="mini-label">CRITICAL MILESTONES</span>
+                  <div class="mini-icon-circle icon-circle-peach">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  </div>
+                </div>
+                <div class="mini-kpi-val"><strong id="editorMiniCriticalNum">2</strong> <span class="sub">due this week</span></div>
+              </div>
+
+              <div class="mini-kpi-card">
+                <div class="mini-kpi-top">
+                  <span class="mini-label">COMPLETED VELOCITY</span>
+                  <div class="mini-icon-circle icon-circle-mint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00885d" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                  </div>
+                </div>
+                <div class="mini-kpi-val"><strong id="editorMiniCompletedNum">24</strong> <span class="sub-green">+18% vs last wk</span></div>
+              </div>
+            </div>
+
+            <!-- Grouped Task Accordions -->
+            <div class="editor-task-groups-container" id="editorTaskGroupsContainer">
+              <!-- High Priority Section -->
+              <div class="editor-task-group">
+                <div class="group-header-row">
+                  <div class="group-header-left">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <span class="group-title">HIGH PRIORITY TASKS</span>
+                    <span class="group-counter-pill" id="groupHighCount">2</span>
+                  </div>
+                  <span class="group-sort-label">Sorted by Deadline</span>
+                </div>
+                <div class="group-items-list" id="editorGroupHigh">
+                  <!-- Items injected via JS -->
+                </div>
+              </div>
+
+              <!-- In Progress Section -->
+              <div class="editor-task-group mt-4">
+                <div class="group-header-row">
+                  <div class="group-header-left">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <span class="group-title">IN PROGRESS</span>
+                    <span class="group-counter-pill" id="groupInProgressCount">3</span>
+                  </div>
+                </div>
+                <div class="group-items-list" id="editorGroupInProgress">
+                  <!-- Items injected via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Detail Drawer Pane (Interactive Task Inspector / Editor) -->
+          <div class="editor-right-drawer" id="editorDrawer">
+            <div class="drawer-header-controls">
+              <div class="drawer-header-left">
+                <!-- Status Dropdown Pill -->
+                <div class="select-pill-wrapper">
+                  <span class="status-indicator-dot dot-inprogress"></span>
+                  <select id="drawerStatusSelect" class="drawer-status-select" aria-label="Status da Tarefa">
+                    <option value="in_progress">In Progress</option>
+                    <option value="todo">To Do</option>
+                    <option value="completed">Completed</option>
+                    <option value="under_review">Under Review</option>
+                  </select>
+                </div>
+                <span class="task-key-tag" id="drawerTaskKeyTag">#TSK-104</span>
+                <button class="icon-btn-xs" title="Copy Key" id="btnCopyTaskKey" aria-label="Copiar chave da tarefa">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
+
+              <div class="drawer-header-actions">
+                <button class="icon-btn-drawer" title="Star Task" aria-label="Favoritar tarefa">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </button>
+                <button class="icon-btn-drawer" title="Share" aria-label="Compartilhar tarefa">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                </button>
+                <button class="icon-btn-drawer" title="More options" aria-label="Mais opções">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                </button>
+                <button class="icon-btn-drawer" id="btnCloseDrawer" title="Close Drawer" aria-label="Fechar painel">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="drawer-scrollable-body">
+              <!-- Task Title Editable -->
+              <div class="drawer-title-area">
+                <input type="text" class="drawer-title-input" id="drawerTitleInput" value="Finalize Q4 Product Roadmap & Feature Specs" placeholder="Task title..." autocomplete="off">
+                <div class="drawer-meta-line">
+                  Created on <span id="drawerCreatedDate">Oct 18, 2024</span> in <span class="meta-highlight">Acme Workspace / Product Pod</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons Bar -->
+              <div class="drawer-quick-actions-bar">
+                <button class="btn-mark-complete" id="drawerBtnComplete">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span id="drawerCompleteBtnText">Mark Complete</span>
+                </button>
+
+                <div class="priority-selector-pill">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                  <select id="drawerPrioritySelect" class="drawer-priority-select" aria-label="Prioridade da Tarefa">
+                    <option value="high">High Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="low">Low Priority</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Due banner -->
+              <div class="drawer-due-banner">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4648d4" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span id="drawerDueBannerText">Due Today, 5:00 PM</span>
+              </div>
+
+              <!-- Properties Field Grid -->
+              <div class="drawer-fields-grid">
+                <!-- Status Row -->
+                <div class="field-row">
+                  <div class="field-label-cell">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    <span>Status</span>
+                  </div>
+                  <div class="field-value-cell">
+                    <div class="pill-field-select">
+                      <span class="status-indicator-dot dot-inprogress"></span>
+                      <select id="drawerFieldStatus" class="native-prop-select" aria-label="Status">
+                        <option value="in_progress">In Progress</option>
+                        <option value="todo">To Do</option>
+                        <option value="completed">Completed</option>
+                        <option value="under_review">Under Review</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Priority Row -->
+                <div class="field-row">
+                  <div class="field-label-cell">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    <span>Priority</span>
+                  </div>
+                  <div class="field-value-cell">
+                    <div class="badge-priority-peach">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                      <select id="drawerFieldPriority" class="native-prop-select" aria-label="Prioridade">
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                        <option value="urgent">Urgent</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Assignee Row -->
+                <div class="field-row">
+                  <div class="field-label-cell">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Assignee</span>
+                  </div>
+                  <div class="field-value-cell">
+                    <div class="assignee-cell-val">
+                      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Alex Morgan" class="avatar-micro">
+                      <select id="drawerFieldAssignee" class="native-prop-select" aria-label="Responsável">
+                        <option value="Alex Morgan">Alex Morgan</option>
+                        <option value="Dev Team">Dev Team</option>
+                        <option value="Product Pod">Product Pod</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Due Date Row -->
+                <div class="field-row">
+                  <div class="field-label-cell">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Due Date</span>
+                  </div>
+                  <div class="field-value-cell">
+                    <span class="badge-time-remaining" id="drawerRemainingBadge">1h remaining</span>
+                    <input type="text" id="drawerFieldDueDate" class="input-inline-date" value="Oct 24, 5:00 PM" aria-label="Data de Vencimento">
+                  </div>
+                </div>
+
+                <!-- Project Row -->
+                <div class="field-row">
+                  <div class="field-label-cell">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Project</span>
+                  </div>
+                  <div class="field-value-cell">
+                    <div class="pill-project-select">
+                      <span class="project-dot dot-roadmap"></span>
+                      <select id="drawerFieldProject" class="native-prop-select" aria-label="Projeto">
+                        <option value="Product Roadmap">Product Roadmap</option>
+                        <option value="Marketing Launch">Marketing Launch</option>
+                        <option value="Engineering Sprint">Engineering Sprint</option>
+                        <option value="Personal Goals">Personal Goals</option>
+                        <option value="Design Systems">Design Systems</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Estimated Time Row -->
+                <div class="field-row">
+                  <div class="field-label-cell">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>Estimated Time</span>
+                  </div>
+                  <div class="field-value-cell">
+                    <span class="field-text-bold" id="drawerEstTime">3.5 hrs</span>
+                    <span class="field-text-muted">Tracked: <strong id="drawerTrackedTime">2.0 hrs</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Description & Context Section -->
+              <div class="drawer-section-desc">
+                <div class="section-title-row">
+                  <div class="title-with-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="14" y2="18"></line></svg>
+                    <span class="section-heading">DESCRIPTION & CONTEXT</span>
+                  </div>
+                  <button class="link-edit-fullpage" id="btnEditFullPage">Edit in full page</button>
+                </div>
+
+                <div class="drawer-desc-editor">
+                  <textarea id="drawerDescTextarea" class="drawer-textarea" rows="4" placeholder="Add detailed context, notes or markdown..." aria-label="Descrição e Contexto">Consolidate feedback from engineering leads and leadership sync prior to board review. Prepare high-impact slide deck for executive sign-off on Friday morning before general release rollout.</textarea>
+                </div>
+
+                <!-- Checklist deliverables -->
+                <div class="drawer-checklist-block">
+                  <div class="chk-block-header">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    <span>Deliverables & Key Architectural Limits:</span>
+                  </div>
+                  <ul class="chk-bullets-list" id="drawerDeliverablesList">
+                    <li>Cap active synchronous socket connections per tenant at 250 req/sec</li>
+                    <li>Finalize cross-region database schema migration rollback plan</li>
+                    <li>Incorporate Q3 NPS feedback from enterprise pilot customers</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Drawer Bottom Save Bar -->
+            <div class="drawer-bottom-bar">
+              <div class="drawer-audit-status">
+                <span class="dot-sync-green"></span>
+                <span id="drawerAuditText">Edited 12 minutes ago by Alex Morgan</span>
+              </div>
+              <div class="drawer-footer-actions">
+                <button class="btn-icon-danger" id="drawerBtnDelete" title="Delete Task" aria-label="Excluir Tarefa">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+                <button class="btn-primary-purple" id="drawerBtnSave">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Save Changes</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- MODAL POPUP (Modal.png) -->
+    <div class="modal-overlay" id="taskModalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitleInput">
+      <div class="modal-card" id="taskModalCard">
+        
+        <!-- Modal Top Title Input -->
+        <div class="modal-title-row">
+          <input type="text" class="modal-title-input" id="modalTitleInput" placeholder="Task title..." value="Redesign checkout flow & payment gateway integration" required>
+        </div>
+
+        <!-- Description Box with rich formatting bar -->
+        <div class="modal-desc-container">
+          <textarea class="modal-desc-input" id="modalDescInput" rows="3" placeholder="Outline technical specifications, edge cases for failed transactions, and UX audit checklist for European 3DS compliance...">Outline technical specifications, edge cases for failed transactions, and UX audit checklist for European 3DS compliance.</textarea>
+          
+          <div class="modal-desc-toolbar">
+            <div class="toolbar-tools">
+              <button type="button" class="tool-btn" title="Bold"><strong>B</strong></button>
+              <button type="button" class="tool-btn" title="Italic"><em>I</em></button>
+              <button type="button" class="tool-btn" title="Link">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              </button>
+              <button type="button" class="tool-btn" title="Code">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              </button>
+              <button type="button" class="tool-btn" title="List">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              </button>
+              <button type="button" class="tool-btn" title="Mention">@</button>
+            </div>
+            <span class="toolbar-hint">Markdown supported</span>
+          </div>
+        </div>
+
+        <!-- Two Columns Form Controls: Due Date & Time, Priority Level -->
+        <div class="modal-form-grid-2">
+          <!-- Col 1: Due Date & Time -->
+          <div class="modal-form-group">
+            <label class="modal-field-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>Due Date & Time</span>
+            </label>
+            <div class="date-time-input-box">
+              <input type="text" class="input-date-text" id="modalDueDateText" value="Today, Oct 24, 2024" aria-label="Data de Vencimento">
+              <input type="text" class="input-time-text" id="modalDueTimeText" value="05:00 PM" aria-label="Hora de Vencimento">
+            </div>
+            <div class="quick-date-pills">
+              <button type="button" class="date-pill active" data-quick="today">Today</button>
+              <button type="button" class="date-pill" data-quick="tomorrow">Tomorrow</button>
+              <button type="button" class="date-pill" data-quick="next-week">Next Week</button>
+            </div>
+          </div>
+
+          <!-- Col 2: Priority Level -->
+          <div class="modal-form-group">
+            <label class="modal-field-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+              <span>Priority Level</span>
+            </label>
+            <div class="priority-segmented-control" id="modalPriorityGroup">
+              <button type="button" class="pseg-btn" data-priority="low">Low</button>
+              <button type="button" class="pseg-btn" data-priority="medium">Med</button>
+              <button type="button" class="pseg-btn active" data-priority="high">High</button>
+              <button type="button" class="pseg-btn" data-priority="urgent">Urgent</button>
+            </div>
+            <div class="priority-sla-hint">
+              <span class="red-dot"></span>
+              <span id="prioritySlaText">Flags task in high-impact SLA metrics</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Columns Form Controls: Assignee, Notification Alert -->
+        <div class="modal-form-grid-2 mt-3">
+          <!-- Col 1: Assignee -->
+          <div class="modal-form-group">
+            <label class="modal-field-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>Assignee</span>
+            </label>
+            <div class="assignee-picker-row">
+              <div class="assignee-chip">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Alex Morgan" class="chip-avatar">
+                <span class="chip-name">Alex Morgan</span>
+                <button type="button" class="chip-close" aria-label="Remover responsável">✕</button>
+              </div>
+              <button type="button" class="btn-subtle-add" id="btnModalAddAssignee">+ Add</button>
+            </div>
+          </div>
+
+          <!-- Col 2: Notification Alert -->
+          <div class="modal-form-group">
+            <label class="modal-field-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+              <span>Notification Alert</span>
+            </label>
+            <div class="alert-toggle-row">
+              <span class="alert-label">30 min before due</span>
+              <label class="switch-toggle">
+                <input type="checkbox" id="modalNotificationToggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Labels / Tags Section -->
+        <div class="modal-form-group mt-3">
+          <label class="modal-field-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            <span>Labels & Project</span>
+          </label>
+          <div class="labels-tag-cloud" id="modalLabelsContainer">
+            <span class="label-chip">#design <button type="button" class="chip-x">✕</button></span>
+            <span class="label-chip">#q4-roadmap <button type="button" class="chip-x">✕</button></span>
+            <select id="modalProjectSelect" class="modal-inline-project-select" aria-label="Selecionar Projeto">
+              <option value="Product Roadmap">Product Roadmap</option>
+              <option value="Marketing Launch">Marketing Launch</option>
+              <option value="Engineering Sprint">Engineering Sprint</option>
+              <option value="Personal Goals">Personal Goals</option>
+              <option value="Design Systems">Design Systems</option>
+            </select>
+            <button type="button" class="btn-subtle-add" id="btnModalAddTag">+ Add Tag</button>
+          </div>
+        </div>
+
+        <!-- Subtasks & Acceptance Checklist -->
+        <div class="modal-form-group mt-4">
+          <div class="subtasks-header-row">
+            <label class="modal-field-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>Subtasks & Acceptance Checklist</span>
+            </label>
+            <span class="checklist-progress-counter" id="modalSubtasksCounter">1 of 2 completed</span>
+          </div>
+
+          <div class="subtasks-list-container" id="modalSubtasksList">
+            <div class="subtask-row">
+              <input type="checkbox" class="subtask-chk" checked id="stk-1">
+              <label for="stk-1" class="subtask-label strike">Audit Stripe SDK v3 upgrade compatibility</label>
+              <button type="button" class="subtask-remove-btn" aria-label="Remover subtarefa">✕</button>
+            </div>
+            <div class="subtask-row">
+              <input type="checkbox" class="subtask-chk" id="stk-2">
+              <label for="stk-2" class="subtask-label">Draft error notification copy & localized strings</label>
+              <button type="button" class="subtask-remove-btn" aria-label="Remover subtarefa">✕</button>
+            </div>
+          </div>
+
+          <button type="button" class="btn-subtask-add" id="btnModalAddSubtask">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Add subtask</span>
+          </button>
+        </div>
+
+        <!-- Modal Footer Controls -->
+        <div class="modal-footer-row">
+          <div class="modal-shortcuts-hint">
+            <span class="kbd-pill">⌘ + Enter</span> <span>to save</span>
+            <span class="bullet-sep">•</span>
+            <span class="kbd-pill">Esc</span> <span>to cancel</span>
+          </div>
+          <div class="modal-action-buttons">
+            <button type="button" class="btn-modal-cancel" id="btnModalCancel">Cancel</button>
+            <button type="button" class="btn-primary-purple" id="btnModalSubmit">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span id="btnModalSubmitLabel">Create Task</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Confirm Delete Dialog Modal -->
+    <div class="modal-overlay" id="confirmDeleteModal" role="dialog" aria-modal="true" aria-labelledby="confirmDeleteTitle" style="display: none;">
+      <div class="modal-card modal-confirm-card">
+        <div class="confirm-icon-danger">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ba1a1a" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <h3 id="confirmDeleteTitle" class="confirm-title">Excluir Tarefa?</h3>
+        <p class="confirm-msg" id="confirmDeleteMsg">Esta ação não pode ser desfeita. Tem certeza que deseja remover esta tarefa permanentemente?</p>
+        <div class="confirm-actions">
+          <button type="button" class="btn-modal-cancel" id="btnCancelDelete">Cancelar</button>
+          <button type="button" class="btn-danger-solid" id="btnConfirmDelete">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div class="toast-container" id="toastContainer"></div>
+
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
