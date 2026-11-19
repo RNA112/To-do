@@ -1,266 +1,44 @@
 /**
- * TASKFLOW — LOGICA PRINCIPAL (JAVASCRIPT VANILLA ES6+)
- * Totalmente livre de frameworks ou dependências externas
- * Persistência completa via LocalStorage, CRUD reativo, métricas dinâmicas
+ * TASKFLOW — LOGICA PRINCIPAL (JAVASCRIPT VANILLA ES6+ / FIREBASE FIRESTORE)
+ * Totalmente integrado ao Firebase Firestore com sincronização em tempo real (onSnapshot)
+ * Livre de localStorage e dados hardcoded.
  */
+
+import {
+  db,
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  serverTimestamp
+} from "./firebase-config.js";
 
 (function () {
   'use strict';
 
-  // 1. ESTADO INICIAL / DADOS PADRÃO (Conforme Protótipos)
-  const STORAGE_KEY = 'taskflow_data_v1';
-
-  const DEFAULT_INITIAL_DATA = [
-    {
-      id: 'TSK-104',
-      title: 'Finalize Q4 Product Roadmap & Feature Specs',
-      description: 'Consolidate feedback from engineering leads and leadership sync prior to board review. Prepare high-impact slide deck for executive sign-off on Friday morning before general release rollout.',
-      project: 'Product Roadmap',
-      priority: 'high',
-      dueDate: 'Today, 5:00 PM',
-      dueDateRaw: '2024-10-24T17:00',
-      timeSlot: 'today',
-      status: 'in_progress', // 'todo', 'in_progress', 'completed'
-      completed: false,
-      completedAt: null,
-      assignee: 'Alex Morgan',
-      labels: ['#design', '#q4-roadmap'],
-      subtasks: [
-        { id: 'st-1', text: 'Audit Stripe SDK v3 upgrade compatibility', done: true },
-        { id: 'st-2', text: 'Draft error notification copy & localized strings', done: false },
-        { id: 'st-3', text: 'Align cross-region database latency benchmarks', done: true },
-        { id: 'st-4', text: 'Review security access controls for admin dashboard', done: true },
-        { id: 'st-5', text: 'Generate API schema diagrams in Figma', done: true }
-      ],
-      estimatedTime: '3.5 hrs',
-      trackedTime: '2.0 hrs',
-      createdAt: 'Oct 18, 2024'
-    },
-    {
-      id: 'TSK-105',
-      title: 'Review marketing launch campaign assets for v2.4',
-      description: 'Verify responsive banner creatives, typographic standards, and copywriting guidelines.',
-      project: 'Marketing Launch',
-      priority: 'high',
-      dueDate: 'Today, 6:30 PM',
-      dueDateRaw: '2024-10-24T18:30',
-      timeSlot: 'today',
-      status: 'in_progress',
-      completed: false,
-      completedAt: null,
-      assignee: 'Alex Morgan',
-      labels: ['#marketing', '#assets'],
-      subtasks: [
-        { id: 'st-6', text: 'Check Figma color profiles for print assets', done: true },
-        { id: 'st-7', text: 'Proofread landing page copy in German and Spanish', done: true },
-        { id: 'st-8', text: 'Validate hero video compression size under 4MB', done: false }
-      ],
-      estimatedTime: '2.0 hrs',
-      trackedTime: '1.2 hrs',
-      createdAt: 'Oct 20, 2024'
-    },
-    {
-      id: 'TSK-098',
-      title: 'Database schema migration review for user authentication',
-      description: 'Audit latency impact on PostgreSQL cluster, verify foreign keys, and dry-run rollback scripts.',
-      project: 'Engineering Sprint',
-      priority: 'medium',
-      dueDate: 'Tomorrow, 11:00 AM',
-      dueDateRaw: '2024-10-25T11:00',
-      timeSlot: 'upcoming',
-      status: 'in_progress',
-      completed: false,
-      completedAt: null,
-      assignee: 'Dev Team',
-      labels: ['#backend', '#auth'],
-      subtasks: [
-        { id: 'st-9', text: 'Test rollback transaction on staging replica', done: true },
-        { id: 'st-10', text: 'Review index utilization with pg_stat_statements', done: false }
-      ],
-      estimatedTime: '4.0 hrs',
-      trackedTime: '1.5 hrs',
-      createdAt: 'Oct 21, 2024'
-    },
-    {
-      id: 'TSK-089',
-      title: 'Update Design System tokens & Figma component library',
-      description: 'Align color contrast ratios and dark mode variables with WCAG AAA accessibility thresholds.',
-      project: 'Design Systems',
-      priority: 'medium',
-      dueDate: 'Oct 26, 2:00 PM',
-      dueDateRaw: '2024-10-26T14:00',
-      timeSlot: 'upcoming',
-      status: 'in_progress',
-      completed: false,
-      completedAt: null,
-      assignee: 'Alex Morgan',
-      labels: ['#design-tokens', '#wcag'],
-      subtasks: [
-        { id: 'st-11', text: 'Run WCAG contrast checker plugin on all UI colors', done: true },
-        { id: 'st-12', text: 'Update style.css tokens palette file', done: false }
-      ],
-      estimatedTime: '2.5 hrs',
-      trackedTime: '0.8 hrs',
-      createdAt: 'Oct 22, 2024'
-    },
-    {
-      id: 'TSK-084',
-      title: 'Quarterly 1-on-1 performance sync notes',
-      description: 'Prepare personal growth objectives, mentorship metrics, and peer feedback summaries.',
-      project: 'Personal Goals',
-      priority: 'low',
-      dueDate: 'Oct 28',
-      dueDateRaw: '2024-10-28T10:00',
-      timeSlot: 'upcoming',
-      status: 'todo',
-      completed: false,
-      completedAt: null,
-      assignee: 'Alex Morgan',
-      labels: ['#career', '#quarterly'],
-      subtasks: [],
-      estimatedTime: '1.0 hrs',
-      trackedTime: '0 hrs',
-      createdAt: 'Oct 23, 2024'
-    },
-    // Tarefas Concluídas (Completo.png)
-    {
-      id: 'TSK-071',
-      title: 'Morning standup & sprint sync',
-      description: 'Quick sync with frontend and backend developers on critical deliverables.',
-      project: 'Marketing Launch',
-      priority: 'medium',
-      dueDate: 'Today, 9:30 AM',
-      dueDateRaw: '2024-10-24T09:30',
-      timeSlot: 'today',
-      status: 'completed',
-      completed: true,
-      completedAt: 'Today, 9:30 AM',
-      assignee: 'Alex Morgan',
-      labels: ['#sync'],
-      subtasks: [],
-      estimatedTime: '0.5 hrs',
-      trackedTime: '0.5 hrs',
-      createdAt: 'Oct 24, 2024'
-    },
-    {
-      id: 'TSK-072',
-      title: 'Approve pull request #342 for auth middleware',
-      description: 'Code review and unit tests execution for JWT security patch.',
-      project: 'Engineering Sprint',
-      priority: 'high',
-      dueDate: 'Today, 11:15 AM',
-      dueDateRaw: '2024-10-24T11:15',
-      timeSlot: 'today',
-      status: 'completed',
-      completed: true,
-      completedAt: 'Today, 11:15 AM',
-      assignee: 'Alex Morgan',
-      labels: ['#github', '#pr'],
-      subtasks: [],
-      estimatedTime: '1.0 hrs',
-      trackedTime: '1.0 hrs',
-      createdAt: 'Oct 24, 2024'
-    },
-    {
-      id: 'TSK-073',
-      title: 'Send weekly investor update digest',
-      description: 'Summarize key metrics, user retention graphs and monthly cash runway.',
-      project: 'Product Roadmap',
-      priority: 'high',
-      dueDate: 'Today, 1:45 PM',
-      dueDateRaw: '2024-10-24T13:45',
-      timeSlot: 'today',
-      status: 'completed',
-      completed: true,
-      completedAt: 'Today, 1:45 PM',
-      assignee: 'Alex Morgan',
-      labels: ['#investors'],
-      subtasks: [],
-      estimatedTime: '1.5 hrs',
-      trackedTime: '1.5 hrs',
-      createdAt: 'Oct 24, 2024'
-    },
-    {
-      id: 'TSK-074',
-      title: 'Update dependencies in package.json',
-      description: 'Check for security CVE advisories and upgrade npm libraries.',
-      project: 'Engineering Sprint',
-      priority: 'low',
-      dueDate: 'Today, 2:30 PM',
-      dueDateRaw: '2024-10-24T14:30',
-      timeSlot: 'today',
-      status: 'completed',
-      completed: true,
-      completedAt: 'Today, 2:30 PM',
-      assignee: 'Alex Morgan',
-      labels: ['#maintenance'],
-      subtasks: [],
-      estimatedTime: '1.0 hrs',
-      trackedTime: '1.0 hrs',
-      createdAt: 'Oct 24, 2024'
-    },
-    {
-      id: 'TSK-075',
-      title: 'Review user onboarding analytics funnel',
-      description: 'Analyze drop-off rates on step 3 and test copy variants for CTA buttons.',
-      project: 'Product Roadmap',
-      priority: 'medium',
-      dueDate: 'Today, 3:10 PM',
-      dueDateRaw: '2024-10-24T15:10',
-      timeSlot: 'today',
-      status: 'completed',
-      completed: true,
-      completedAt: 'Today, 3:10 PM',
-      assignee: 'Alex Morgan',
-      labels: ['#analytics'],
-      subtasks: [],
-      estimatedTime: '1.0 hrs',
-      trackedTime: '1.0 hrs',
-      createdAt: 'Oct 24, 2024'
-    }
-  ];
-
-  // 2. ESTADO GLOBAL DA APLICAÇÃO
+  // 1. ESTADO GLOBAL DA APLICAÇÃO
   let state = {
     tasks: [],
+    loading: true,
+    error: null,
     currentView: 'dashboard', // 'dashboard', 'completed', 'editor'
     currentFilter: 'all',     // 'all', 'today', 'upcoming', 'completed'
     searchQuery: '',
     currentSort: 'dueDate',   // 'dueDate', 'priority', 'title'
-    selectedTaskId: 'TSK-104',
+    selectedTaskId: null,
     selectedProjectFilter: null,
     editingTask: null,
     deletingTaskId: null,
     tempModalSubtasks: []
   };
 
-  // 3. PERSISTÊNCIA VIA LOCALSTORAGE
-  function loadFromStorage() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          state.tasks = parsed;
-          return;
-        }
-      }
-    } catch (e) {
-      console.warn('LocalStorage inválido ou corrompido, restaurando dados padrão.', e);
-    }
-    state.tasks = JSON.parse(JSON.stringify(DEFAULT_INITIAL_DATA));
-    saveToStorage();
-  }
+  let unsubscribeTasks = null;
 
-  function saveToStorage() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.tasks));
-    } catch (e) {
-      console.error('Falha ao salvar no LocalStorage:', e);
-    }
-  }
-
-  // 4. ELEMENTOS DO DOM (CACHE)
+  // 2. ELEMENTOS DO DOM (CACHE)
   const DOM = {
     // Views
     viewDashboard: document.getElementById('viewDashboard'),
@@ -378,8 +156,9 @@
     toastContainer: document.getElementById('toastContainer')
   };
 
-  // 5. TOAST NOTIFICATION UTILITY
+  // 3. TOAST NOTIFICATION UTILITY
   function showToast(message, type = 'info') {
+    if (!DOM.toastContainer) return;
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `
@@ -401,7 +180,7 @@
 
   function escapeHTML(str) {
     if (!str) return '';
-    return str.replace(/[&<>'"]/g, tag => ({
+    return String(str).replace(/[&<>'"]/g, tag => ({
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
@@ -410,14 +189,66 @@
     }[tag] || tag));
   }
 
-  // 6. RENDERIZAÇÃO DAS VIEWS & NAVEGAÇÃO
+  // 4. SINCRONIZAÇÃO EM TEMPO REAL COM ONSNAPSHOT
+  function initFirestoreListener() {
+    state.loading = true;
+    state.error = null;
+    renderAll();
+
+    const tasksRef = collection(db, "tasks");
+    const tasksQuery = query(tasksRef, orderBy("createdAt", "desc"));
+
+    try {
+      unsubscribeTasks = onSnapshot(
+        tasksQuery,
+        (snapshot) => {
+          state.loading = false;
+          state.error = null;
+
+          state.tasks = snapshot.docs.map((document) => {
+            const data = document.data();
+            return {
+              id: document.id,
+              ...data
+            };
+          });
+
+          // Se a tarefa selecionada não existir mais, seleciona a primeira disponível
+          if (state.tasks.length > 0) {
+            if (!state.selectedTaskId || !state.tasks.some(t => t.id === state.selectedTaskId)) {
+              state.selectedTaskId = state.tasks[0].id;
+            }
+          } else {
+            state.selectedTaskId = null;
+          }
+
+          renderAll();
+        },
+        (error) => {
+          console.error("Erro ao sincronizar tarefas com o Firestore:", error);
+          state.loading = false;
+          state.error = error;
+          showToast("Não foi possível sincronizar as tarefas com o servidor.", "error");
+          renderAll();
+        }
+      );
+    } catch (err) {
+      console.error("Erro ao inicializar listener Firestore:", err);
+      state.loading = false;
+      state.error = err;
+      showToast("Falha na inicialização do serviço Firestore.", "error");
+      renderAll();
+    }
+  }
+
+  // 5. RENDERIZAÇÃO DAS VIEWS & NAVEGAÇÃO
   function switchView(viewName) {
     state.currentView = viewName;
 
     // Atualiza classes ativas nos painéis
-    DOM.viewDashboard.classList.toggle('active', viewName === 'dashboard');
-    DOM.viewCompleted.classList.toggle('active', viewName === 'completed');
-    DOM.viewEditor.classList.toggle('active', viewName === 'editor');
+    if (DOM.viewDashboard) DOM.viewDashboard.classList.toggle('active', viewName === 'dashboard');
+    if (DOM.viewCompleted) DOM.viewCompleted.classList.toggle('active', viewName === 'completed');
+    if (DOM.viewEditor) DOM.viewEditor.classList.toggle('active', viewName === 'editor');
 
     // Atualiza seleção na Sidebar
     DOM.navLinks.forEach(link => {
@@ -431,14 +262,14 @@
     });
 
     // Fecha menu mobile se aberto
-    DOM.sidebar.classList.remove('open');
-    DOM.sidebarBackdrop.classList.remove('open');
+    if (DOM.sidebar) DOM.sidebar.classList.remove('open');
+    if (DOM.sidebarBackdrop) DOM.sidebarBackdrop.classList.remove('open');
 
     // Renderiza dados correspondentes
     renderAll();
   }
 
-  // 7. CÁLCULO DINÂMICO DE MÉTRICAS & INDICADORES
+  // 6. CÁLCULO DINÂMICO DE MÉTRICAS & INDICADORES
   function updateMetrics() {
     const total = state.tasks.length;
     const completedTasks = state.tasks.filter(t => t.completed);
@@ -447,18 +278,18 @@
     const pendingCount = pendingTasks.length;
     
     // Tarefas de hoje
-    const todayTasks = state.tasks.filter(t => t.timeSlot === 'today' && !t.completed);
+    const todayTasks = state.tasks.filter(t => (t.timeSlot === 'today' || (t.dueDate && String(t.dueDate).toLowerCase().includes('today'))) && !t.completed);
     const todayCount = todayTasks.length;
     
     // Próximas (upcoming)
-    const upcomingTasks = state.tasks.filter(t => t.timeSlot === 'upcoming' && !t.completed);
+    const upcomingTasks = state.tasks.filter(t => (t.timeSlot === 'upcoming' || (!t.completed && t.timeSlot !== 'today' && (!t.dueDate || !String(t.dueDate).toLowerCase().includes('today')))) && !t.completed);
     const upcomingCount = upcomingTasks.length;
 
     // Alta prioridade pendentes
     const highPriorityTasks = pendingTasks.filter(t => t.priority === 'high' || t.priority === 'urgent');
 
-    // Overdue (calculado por data se aplicável, ou fallback consistente)
-    const overdueCount = Math.max(0, state.tasks.filter(t => t.priority === 'urgent' && !t.completed).length + 1);
+    // Overdue
+    const overdueCount = state.tasks.filter(t => t.priority === 'urgent' && !t.completed).length;
 
     // Porcentagem de conclusão
     const completionPercentage = total > 0 ? Math.round((completedCount / total) * 100) : 0;
@@ -494,7 +325,6 @@
       DOM.radialPercentageText.textContent = `${completionPercentage}%`;
     }
     if (DOM.productivityRadialFill) {
-      // Perímetro do círculo r=34 => 2 * PI * 34 ≈ 213.6
       const perimeter = 213.6;
       const offset = perimeter - (perimeter * (completionPercentage / 100));
       DOM.productivityRadialFill.style.strokeDashoffset = offset;
@@ -524,20 +354,20 @@
     }
   }
 
-  // 8. FILTRAGEM E ORDENAÇÃO DE TAREFAS
+  // 7. FILTRAGEM E ORDENAÇÃO DE TAREFAS
   function getFilteredTasks() {
     let result = [...state.tasks];
 
     // Filtro por View/Status
     if (state.currentFilter === 'today') {
-      result = result.filter(t => t.timeSlot === 'today' || (t.dueDate && t.dueDate.toLowerCase().includes('today')));
+      result = result.filter(t => t.timeSlot === 'today' || (t.dueDate && String(t.dueDate).toLowerCase().includes('today')));
     } else if (state.currentFilter === 'upcoming') {
-      result = result.filter(t => t.timeSlot === 'upcoming' || (!t.completed && t.timeSlot !== 'today'));
+      result = result.filter(t => t.timeSlot === 'upcoming' || (!t.completed && t.timeSlot !== 'today' && (!t.dueDate || !String(t.dueDate).toLowerCase().includes('today'))));
     } else if (state.currentFilter === 'completed') {
       result = result.filter(t => t.completed);
     }
 
-    // Filtro de Busca (por título ou projeto)
+    // Filtro de Busca (por título, descrição, projeto ou ID)
     const q = state.searchQuery.trim().toLowerCase();
     if (q) {
       result = result.filter(t => 
@@ -553,7 +383,7 @@
       const pWeights = { urgent: 4, high: 3, medium: 2, low: 1 };
       result.sort((a, b) => (pWeights[b.priority] || 0) - (pWeights[a.priority] || 0));
     } else if (state.currentSort === 'title') {
-      result.sort((a, b) => a.title.localeCompare(b.title));
+      result.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
     } else {
       // Due Date (padrão)
       result.sort((a, b) => {
@@ -565,19 +395,49 @@
     return result;
   }
 
-  // 9. RENDERIZAÇÃO DO DASHBOARD (Dashboard.png)
+  // 8. RENDERIZAÇÃO DO DASHBOARD
   function renderDashboardTasks() {
     if (!DOM.dashboardTaskStream) return;
+
+    // Estado de Carregamento
+    if (state.loading) {
+      DOM.dashboardTaskStream.innerHTML = `
+        <div class="state-feedback-card">
+          <div class="loading-spinner"></div>
+          <p class="state-feedback-title">Sincronizando tarefas...</p>
+          <p class="state-feedback-desc">Carregando seus registros diretamente do Firestore.</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Estado de Erro
+    if (state.error) {
+      DOM.dashboardTaskStream.innerHTML = `
+        <div class="state-feedback-card error">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-error)" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <p class="state-feedback-title" style="color: var(--color-error);">Erro ao carregar dados</p>
+          <p class="state-feedback-desc">${escapeHTML(state.error.message || 'Verifique sua conexão ou permissões de acesso ao Firestore.')}</p>
+        </div>
+      `;
+      return;
+    }
+
     const tasks = getFilteredTasks();
 
+    // Estado de Lista Vazia
     if (tasks.length === 0) {
       DOM.dashboardTaskStream.innerHTML = `
-        <div style="background:#ffffff; border:1px dashed var(--color-divider); border-radius:12px; padding:32px; text-align:center; color:var(--color-slate-400);">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px;">
+        <div class="state-feedback-card">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line>
           </svg>
-          <p style="font-weight:600; font-size:14px; color:var(--color-on-surface);">Nenhuma tarefa encontrada</p>
-          <p style="font-size:12px; margin-top:4px;">Crie uma nova tarefa pelo botão superior ou altere os filtros.</p>
+          <p class="state-feedback-title">Nenhuma tarefa encontrada</p>
+          <p class="state-feedback-desc">Crie uma nova tarefa pelo botão superior ou altere os filtros aplicados.</p>
         </div>
       `;
       return;
@@ -633,7 +493,7 @@
                 ${subtaskMeta}
               </div>
 
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Assignee" class="task-card-avatar" title="${escapeHTML(task.assignee)}">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Assignee" class="task-card-avatar" title="${escapeHTML(task.assignee || 'Alex Morgan')}">
             </div>
           </div>
         </div>
@@ -641,15 +501,39 @@
     }).join('');
   }
 
-  // 10. RENDERIZAÇÃO DA VIEW COMPLETED (Completo.png)
+  // 9. RENDERIZAÇÃO DA VIEW COMPLETED
   function renderCompletedTasks() {
     if (!DOM.completedItemsStream) return;
+
+    if (state.loading) {
+      DOM.completedItemsStream.innerHTML = `
+        <div class="state-feedback-card">
+          <div class="loading-spinner"></div>
+          <p class="state-feedback-title">Carregando arquivo...</p>
+        </div>
+      `;
+      return;
+    }
+
+    if (state.error) {
+      DOM.completedItemsStream.innerHTML = `
+        <div class="state-feedback-card error">
+          <p class="state-feedback-title" style="color: var(--color-error);">Erro ao carregar dados</p>
+        </div>
+      `;
+      return;
+    }
+
     const completedList = state.tasks.filter(t => t.completed);
 
     if (completedList.length === 0) {
       DOM.completedItemsStream.innerHTML = `
-        <div style="padding: 24px; text-align: center; color: var(--color-slate-400);">
-          Nenhuma tarefa concluída no momento. Marque uma tarefa como concluída para visualizá-la aqui!
+        <div class="state-feedback-card">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <p class="state-feedback-title">Nenhuma tarefa concluída</p>
+          <p class="state-feedback-desc">Marque uma tarefa como concluída no painel para visualizá-la no histórico.</p>
         </div>
       `;
       return;
@@ -682,19 +566,24 @@
     }).join('');
   }
 
-  // 11. RENDERIZAÇÃO DA VIEW EDITOR / PROJETO (Editor.png)
+  // 10. RENDERIZAÇÃO DA VIEW EDITOR / PROJETO
   function renderEditorTasks() {
     if (!DOM.editorGroupHigh || !DOM.editorGroupInProgress) return;
 
-    // Filtra tarefas do projeto ou geral
+    if (state.loading) {
+      DOM.editorGroupHigh.innerHTML = '<div class="state-feedback-card"><div class="loading-spinner"></div></div>';
+      DOM.editorGroupInProgress.innerHTML = '';
+      return;
+    }
+
     let projectTasks = state.tasks;
     if (state.selectedProjectFilter) {
       projectTasks = state.tasks.filter(t => t.project === state.selectedProjectFilter);
       if (DOM.editorProjectTitle) DOM.editorProjectTitle.textContent = state.selectedProjectFilter;
       if (DOM.editorCrumbProject) DOM.editorCrumbProject.textContent = state.selectedProjectFilter.toUpperCase();
     } else {
-      if (DOM.editorProjectTitle) DOM.editorProjectTitle.textContent = 'Q4 Strategic Execution Plan';
-      if (DOM.editorCrumbProject) DOM.editorCrumbProject.textContent = 'PRODUCT ROADMAP';
+      if (DOM.editorProjectTitle) DOM.editorProjectTitle.textContent = 'Execution Plan';
+      if (DOM.editorCrumbProject) DOM.editorCrumbProject.textContent = 'ALL PROJECTS';
     }
 
     const highTasks = projectTasks.filter(t => (t.priority === 'high' || t.priority === 'urgent') && !t.completed);
@@ -703,13 +592,14 @@
     if (DOM.groupHighCount) DOM.groupHighCount.textContent = highTasks.length;
     if (DOM.groupInProgressCount) DOM.groupInProgressCount.textContent = inProgressTasks.length;
 
-    // Render High Priority Group
-    DOM.editorGroupHigh.innerHTML = highTasks.map(task => createEditorRowHTML(task)).join('');
+    DOM.editorGroupHigh.innerHTML = highTasks.length > 0
+      ? highTasks.map(task => createEditorRowHTML(task)).join('')
+      : '<p style="padding:16px; color:var(--color-slate-400); font-size:13px;">Nenhuma tarefa de alta prioridade.</p>';
 
-    // Render In Progress Group
-    DOM.editorGroupInProgress.innerHTML = inProgressTasks.map(task => createEditorRowHTML(task)).join('');
+    DOM.editorGroupInProgress.innerHTML = inProgressTasks.length > 0
+      ? inProgressTasks.map(task => createEditorRowHTML(task)).join('')
+      : '<p style="padding:16px; color:var(--color-slate-400); font-size:13px;">Nenhuma tarefa em andamento.</p>';
 
-    // Atualiza Drawer do lado direito com a tarefa selecionada
     renderDrawer();
   }
 
@@ -727,7 +617,7 @@
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </button>
-          <span class="etr-key">#${task.id}</span>
+          <span class="etr-key">#${task.id.slice(0, 7)}</span>
           <div style="min-width:0;">
             <div class="etr-title ${task.completed ? 'done' : ''}">${escapeHTML(task.title)}</div>
             <div class="etr-submeta">
@@ -748,21 +638,27 @@
     `;
   }
 
-  // 12. RENDERIZAÇÃO DO DRAWER DO EDITOR
+  // 11. RENDERIZAÇÃO DO DRAWER DO EDITOR
   function renderDrawer() {
     const task = state.tasks.find(t => t.id === state.selectedTaskId) || state.tasks[0];
-    if (!task) return;
+    if (!task) {
+      if (DOM.drawerTitleInput) DOM.drawerTitleInput.value = '';
+      if (DOM.drawerTaskKeyTag) DOM.drawerTaskKeyTag.textContent = '#---';
+      if (DOM.drawerDescTextarea) DOM.drawerDescTextarea.value = '';
+      if (DOM.drawerDueBannerText) DOM.drawerDueBannerText.textContent = 'Nenhuma tarefa selecionada';
+      return;
+    }
 
     state.selectedTaskId = task.id;
 
-    if (DOM.drawerTitleInput) DOM.drawerTitleInput.value = task.title;
-    if (DOM.drawerTaskKeyTag) DOM.drawerTaskKeyTag.textContent = `#${task.id}`;
+    if (DOM.drawerTitleInput) DOM.drawerTitleInput.value = task.title || '';
+    if (DOM.drawerTaskKeyTag) DOM.drawerTaskKeyTag.textContent = `#${task.id.slice(0, 7)}`;
     if (DOM.drawerStatusSelect) DOM.drawerStatusSelect.value = task.status || (task.completed ? 'completed' : 'in_progress');
     if (DOM.drawerFieldStatus) DOM.drawerFieldStatus.value = task.status || (task.completed ? 'completed' : 'in_progress');
     if (DOM.drawerPrioritySelect) DOM.drawerPrioritySelect.value = task.priority || 'medium';
     if (DOM.drawerFieldPriority) DOM.drawerFieldPriority.value = task.priority || 'medium';
     if (DOM.drawerFieldAssignee) DOM.drawerFieldAssignee.value = task.assignee || 'Alex Morgan';
-    if (DOM.drawerFieldDueDate) DOM.drawerFieldDueDate.value = task.dueDate || 'Oct 24, 5:00 PM';
+    if (DOM.drawerFieldDueDate) DOM.drawerFieldDueDate.value = task.dueDate || 'Today, 5:00 PM';
     if (DOM.drawerFieldProject) DOM.drawerFieldProject.value = task.project || 'Product Roadmap';
     if (DOM.drawerDescTextarea) DOM.drawerDescTextarea.value = task.description || '';
     if (DOM.drawerDueBannerText) DOM.drawerDueBannerText.textContent = `Due ${task.dueDate || 'Today, 5:00 PM'}`;
@@ -776,23 +672,17 @@
     }
   }
 
-  // 13. CONTROLE DE MODAIS (Criação & Edição)
+  // 12. CONTROLE DE MODAIS (Criação & Edição)
   function openCreateModal(initialTitle = '') {
     state.editingTask = null;
-    DOM.modalTitleInput.value = initialTitle || 'Redesign checkout flow & payment gateway integration';
-    DOM.modalDescInput.value = 'Outline technical specifications, edge cases for failed transactions, and UX audit checklist for European 3DS compliance.';
-    DOM.modalDueDateText.value = 'Today, Oct 24, 2024';
+    DOM.modalTitleInput.value = initialTitle;
+    DOM.modalDescInput.value = '';
+    DOM.modalDueDateText.value = 'Today';
     DOM.modalDueTimeText.value = '05:00 PM';
     DOM.btnModalSubmitLabel.textContent = 'Create Task';
 
-    // Prioridade padrão
-    setModalPriority('high');
-
-    // Subtarefas padrão do protótipo Modal.png
-    state.tempModalSubtasks = [
-      { id: 'mst-1', text: 'Audit Stripe SDK v3 upgrade compatibility', done: true },
-      { id: 'mst-2', text: 'Draft error notification copy & localized strings', done: false }
-    ];
+    setModalPriority('medium');
+    state.tempModalSubtasks = [];
     renderModalSubtasks();
 
     DOM.taskModalOverlay.classList.add('open');
@@ -801,9 +691,9 @@
 
   function openEditModal(task) {
     state.editingTask = task;
-    DOM.modalTitleInput.value = task.title;
+    DOM.modalTitleInput.value = task.title || '';
     DOM.modalDescInput.value = task.description || '';
-    DOM.modalDueDateText.value = task.dueDate || 'Today, Oct 24, 2024';
+    DOM.modalDueDateText.value = task.dueDate || 'Today';
     DOM.btnModalSubmitLabel.textContent = 'Save Changes';
 
     setModalPriority(task.priority || 'medium');
@@ -848,8 +738,8 @@
     `).join('');
   }
 
-  // 14. OPERAÇÕES CRUD DE TAREFAS
-  function handleSaveTaskFromModal() {
+  // 13. OPERAÇÕES CRUD NO FIREBASE FIRESTORE
+  async function handleSaveTaskFromModal() {
     const title = DOM.modalTitleInput.value.trim();
     if (!title) {
       showToast('Por favor, informe o título da tarefa.', 'error');
@@ -859,105 +749,130 @@
 
     const priority = getModalSelectedPriority();
     const project = DOM.modalProjectSelect ? DOM.modalProjectSelect.value : 'Product Roadmap';
-    const dueDateStr = `${DOM.modalDueDateText.value}, ${DOM.modalDueTimeText.value}`;
+    const dueDateStr = `${DOM.modalDueDateText.value}${DOM.modalDueTimeText.value ? ', ' + DOM.modalDueTimeText.value : ''}`;
 
-    if (state.editingTask) {
-      // Atualização
-      const task = state.tasks.find(t => t.id === state.editingTask.id);
-      if (task) {
-        task.title = title;
-        task.description = DOM.modalDescInput.value.trim();
-        task.priority = priority;
-        task.project = project;
-        task.dueDate = dueDateStr;
-        task.subtasks = [...state.tempModalSubtasks];
+    // Desabilita botão durante a operação
+    const submitBtn = DOM.btnModalSubmit;
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      if (state.editingTask) {
+        // Atualização via updateDoc
+        const taskId = state.editingTask.id;
+        const taskRef = doc(db, "tasks", taskId);
+        await updateDoc(taskRef, {
+          title: title,
+          description: DOM.modalDescInput.value.trim(),
+          priority: priority,
+          project: project,
+          category: project,
+          dueDate: dueDateStr,
+          subtasks: [...state.tempModalSubtasks],
+          updatedAt: serverTimestamp()
+        });
         showToast('Tarefa atualizada com sucesso!', 'success');
+      } else {
+        // Criação de Nova Tarefa via addDoc
+        const tasksRef = collection(db, "tasks");
+        const docRef = await addDoc(tasksRef, {
+          title: title,
+          description: DOM.modalDescInput.value.trim(),
+          project: project,
+          category: project,
+          priority: priority,
+          dueDate: dueDateStr,
+          dueDateRaw: new Date().toISOString(),
+          timeSlot: 'today',
+          status: 'in_progress',
+          completed: false,
+          completedAt: null,
+          assignee: 'Alex Morgan',
+          labels: ['#taskflow'],
+          subtasks: [...state.tempModalSubtasks],
+          estimatedTime: '2.0 hrs',
+          trackedTime: '0 hrs',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+        state.selectedTaskId = docRef.id;
+        showToast('Nova tarefa criada com sucesso!', 'success');
       }
-    } else {
-      // Criação de Nova Tarefa
-      const nextNum = Math.floor(100 + Math.random() * 900);
-      const newTask = {
-        id: `TSK-${nextNum}`,
-        title: title,
-        description: DOM.modalDescInput.value.trim(),
-        project: project,
-        priority: priority,
-        dueDate: dueDateStr,
+
+      closeModal();
+    } catch (err) {
+      console.error('Erro ao salvar tarefa no Firestore:', err);
+      showToast('Falha ao salvar tarefa no Firestore: ' + (err.message || 'Erro de permissão ou conexão'), 'error');
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  }
+
+  async function handleQuickBarAdd() {
+    const val = DOM.quickBarInput.value.trim();
+    if (!val) return;
+
+    const quickBtn = DOM.btnQuickBarAdd;
+    if (quickBtn) quickBtn.disabled = true;
+
+    try {
+      const tasksRef = collection(db, "tasks");
+      const docRef = await addDoc(tasksRef, {
+        title: val,
+        description: '',
+        project: 'Product Roadmap',
+        category: 'Product Roadmap',
+        priority: 'medium',
+        dueDate: 'Today, 5:00 PM',
         dueDateRaw: new Date().toISOString(),
         timeSlot: 'today',
         status: 'in_progress',
         completed: false,
         completedAt: null,
         assignee: 'Alex Morgan',
-        labels: ['#taskflow'],
-        subtasks: [...state.tempModalSubtasks],
-        estimatedTime: '2.0 hrs',
+        labels: ['#quick'],
+        subtasks: [],
+        estimatedTime: '1.0 hrs',
         trackedTime: '0 hrs',
-        createdAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-      };
-      state.tasks.unshift(newTask);
-      state.selectedTaskId = newTask.id;
-      showToast('Nova tarefa criada com sucesso!', 'success');
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      DOM.quickBarInput.value = '';
+      state.selectedTaskId = docRef.id;
+      showToast('Tarefa adicionada com sucesso!', 'success');
+    } catch (err) {
+      console.error('Erro ao criar tarefa rápida no Firestore:', err);
+      showToast('Falha ao adicionar tarefa: ' + (err.message || 'Erro no banco de dados'), 'error');
+    } finally {
+      if (quickBtn) quickBtn.disabled = false;
     }
-
-    saveToStorage();
-    closeModal();
-    renderAll();
   }
 
-  function handleQuickBarAdd() {
-    const val = DOM.quickBarInput.value.trim();
-    if (!val) return;
-
-    const nextNum = Math.floor(100 + Math.random() * 900);
-    const newTask = {
-      id: `TSK-${nextNum}`,
-      title: val,
-      description: '',
-      project: 'Product Roadmap',
-      priority: 'medium',
-      dueDate: 'Today, 5:00 PM',
-      dueDateRaw: new Date().toISOString(),
-      timeSlot: 'today',
-      status: 'in_progress',
-      completed: false,
-      completedAt: null,
-      assignee: 'Alex Morgan',
-      labels: ['#quick'],
-      subtasks: [],
-      estimatedTime: '1.0 hrs',
-      trackedTime: '0 hrs',
-      createdAt: 'Today'
-    };
-
-    state.tasks.unshift(newTask);
-    state.selectedTaskId = newTask.id;
-    saveToStorage();
-    DOM.quickBarInput.value = '';
-    showToast(`Tarefa "#${newTask.id}" adicionada!`, 'success');
-    renderAll();
-  }
-
-  function toggleTaskComplete(taskId) {
+  async function toggleTaskComplete(taskId) {
     const task = state.tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    task.completed = !task.completed;
-    if (task.completed) {
-      task.status = 'completed';
-      task.completedAt = 'Today, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      showToast(`Tarefa "${task.title}" marcada como concluída!`, 'success');
-    } else {
-      task.status = 'in_progress';
-      task.completedAt = null;
-      showToast(`Tarefa "${task.title}" reaberta.`, 'info');
-    }
+    const newCompleted = !task.completed;
+    const completedAtStr = newCompleted ? ('Today, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) : null;
+    const newStatus = newCompleted ? 'completed' : 'in_progress';
 
-    saveToStorage();
-    renderAll();
+    try {
+      const taskRef = doc(db, "tasks", taskId);
+      await updateDoc(taskRef, {
+        completed: newCompleted,
+        status: newStatus,
+        completedAt: completedAtStr,
+        updatedAt: serverTimestamp()
+      });
+
+      showToast(newCompleted ? `Tarefa marcada como concluída!` : `Tarefa reaberta.`, 'success');
+    } catch (err) {
+      console.error('Erro ao alternar conclusão da tarefa no Firestore:', err);
+      showToast('Não foi possível atualizar o status da tarefa no Firestore.', 'error');
+    }
   }
 
-  function saveDrawerTask() {
+  async function saveDrawerTask() {
     const task = state.tasks.find(t => t.id === state.selectedTaskId);
     if (!task) return;
 
@@ -967,18 +882,33 @@
       return;
     }
 
-    task.title = newTitle;
-    task.description = DOM.drawerDescTextarea.value.trim();
-    task.priority = DOM.drawerFieldPriority.value;
-    task.status = DOM.drawerFieldStatus.value;
-    task.assignee = DOM.drawerFieldAssignee.value;
-    task.dueDate = DOM.drawerFieldDueDate.value;
-    task.project = DOM.drawerFieldProject.value;
-    task.completed = (task.status === 'completed');
+    const saveBtn = DOM.drawerBtnSave;
+    if (saveBtn) saveBtn.disabled = true;
 
-    saveToStorage();
-    showToast('Alterações salvas com sucesso!', 'success');
-    renderAll();
+    try {
+      const taskRef = doc(db, "tasks", task.id);
+      const isCompleted = (DOM.drawerFieldStatus.value === 'completed');
+
+      await updateDoc(taskRef, {
+        title: newTitle,
+        description: DOM.drawerDescTextarea.value.trim(),
+        priority: DOM.drawerFieldPriority.value,
+        status: DOM.drawerFieldStatus.value,
+        assignee: DOM.drawerFieldAssignee.value,
+        dueDate: DOM.drawerFieldDueDate.value,
+        project: DOM.drawerFieldProject.value,
+        category: DOM.drawerFieldProject.value,
+        completed: isCompleted,
+        updatedAt: serverTimestamp()
+      });
+
+      showToast('Alterações salvas no Firestore!', 'success');
+    } catch (err) {
+      console.error('Erro ao salvar tarefa pelo drawer no Firestore:', err);
+      showToast('Falha ao salvar alterações: ' + (err.message || 'Erro no Firestore'), 'error');
+    } finally {
+      if (saveBtn) saveBtn.disabled = false;
+    }
   }
 
   function promptDeleteTask(taskId) {
@@ -986,22 +916,25 @@
     DOM.confirmDeleteModal.style.display = 'flex';
   }
 
-  function confirmDelete() {
+  async function confirmDelete() {
     if (!state.deletingTaskId) return;
-    const taskIdx = state.tasks.findIndex(t => t.id === state.deletingTaskId);
-    if (taskIdx > -1) {
-      const removed = state.tasks.splice(taskIdx, 1)[0];
-      saveToStorage();
-      showToast(`Tarefa #${removed.id} removida permanentemente.`, 'info');
+    const taskIdToDelete = state.deletingTaskId;
+    const confirmBtn = DOM.btnConfirmDelete;
+
+    if (confirmBtn) confirmBtn.disabled = true;
+
+    try {
+      await deleteDoc(doc(db, "tasks", taskIdToDelete));
+      showToast('Tarefa removida permanentemente do Firestore.', 'info');
       
-      // Se era a tarefa selecionada no drawer, reseta para outra
-      if (state.selectedTaskId === removed.id && state.tasks.length > 0) {
-        state.selectedTaskId = state.tasks[0].id;
-      }
+      DOM.confirmDeleteModal.style.display = 'none';
+      state.deletingTaskId = null;
+    } catch (err) {
+      console.error('Erro ao excluir documento no Firestore:', err);
+      showToast('Não foi possível excluir a tarefa: ' + (err.message || 'Erro de permissão'), 'error');
+    } finally {
+      if (confirmBtn) confirmBtn.disabled = false;
     }
-    DOM.confirmDeleteModal.style.display = 'none';
-    state.deletingTaskId = null;
-    renderAll();
   }
 
   function cancelDelete() {
@@ -1009,7 +942,7 @@
     state.deletingTaskId = null;
   }
 
-  // 15. SINCRONIZAÇÃO GERAL DE RENDERIZAÇÃO
+  // 14. SINCRONIZAÇÃO GERAL DE RENDERIZAÇÃO
   function renderAll() {
     updateMetrics();
     if (state.currentView === 'dashboard') {
@@ -1021,7 +954,7 @@
     }
   }
 
-  // 16. REGISTRO DE EVENTOS (EVENT LISTENERS)
+  // 15. REGISTRO DE EVENTOS (EVENT LISTENERS)
   function attachEventListeners() {
     // Navegação Sidebar
     DOM.navLinks.forEach(link => {
@@ -1135,9 +1068,9 @@
         quickDatePills.forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
         const q = pill.getAttribute('data-quick');
-        if (q === 'today') DOM.modalDueDateText.value = 'Today, Oct 24, 2024';
-        else if (q === 'tomorrow') DOM.modalDueDateText.value = 'Tomorrow, Oct 25, 2024';
-        else if (q === 'next-week') DOM.modalDueDateText.value = 'Next Week, Oct 31, 2024';
+        if (q === 'today') DOM.modalDueDateText.value = 'Today';
+        else if (q === 'tomorrow') DOM.modalDueDateText.value = 'Tomorrow';
+        else if (q === 'next-week') DOM.modalDueDateText.value = 'Next Week';
       });
     });
 
@@ -1256,19 +1189,24 @@
     if (DOM.drawerBtnSave) DOM.drawerBtnSave.addEventListener('click', saveDrawerTask);
     if (DOM.drawerBtnDelete) {
       DOM.drawerBtnDelete.addEventListener('click', () => {
-        promptDeleteTask(state.selectedTaskId);
+        if (state.selectedTaskId) {
+          promptDeleteTask(state.selectedTaskId);
+        }
       });
     }
     if (DOM.drawerBtnComplete) {
       DOM.drawerBtnComplete.addEventListener('click', () => {
-        toggleTaskComplete(state.selectedTaskId);
-        renderDrawer();
+        if (state.selectedTaskId) {
+          toggleTaskComplete(state.selectedTaskId);
+          renderDrawer();
+        }
       });
     }
     if (DOM.btnCopyTaskKey) {
       DOM.btnCopyTaskKey.addEventListener('click', () => {
+        if (!state.selectedTaskId) return;
         navigator.clipboard.writeText(state.selectedTaskId).then(() => {
-          showToast(`Chave #${state.selectedTaskId} copiada para a área de transferência!`, 'info');
+          showToast(`Chave #${state.selectedTaskId} copiada!`, 'info');
         }).catch(() => {
           showToast(`Chave #${state.selectedTaskId}`, 'info');
         });
@@ -1281,22 +1219,27 @@
 
     // Limpar Arquivo (Completed View)
     if (DOM.btnClearArchive) {
-      DOM.btnClearArchive.addEventListener('click', () => {
-        const completedCount = state.tasks.filter(t => t.completed).length;
-        if (completedCount === 0) {
+      DOM.btnClearArchive.addEventListener('click', async () => {
+        const completedList = state.tasks.filter(t => t.completed);
+        if (completedList.length === 0) {
           showToast('Não há tarefas arquivadas para limpar.', 'info');
           return;
         }
-        if (confirm(`Deseja remover as ${completedCount} tarefas concluídas?`)) {
-          state.tasks = state.tasks.filter(t => !t.completed);
-          saveToStorage();
-          showToast('Arquivo de tarefas concluídas limpo!', 'success');
-          renderAll();
+        if (confirm(`Deseja remover as ${completedList.length} tarefas concluídas permanentemente do Firestore?`)) {
+          try {
+            for (const t of completedList) {
+              await deleteDoc(doc(db, "tasks", t.id));
+            }
+            showToast('Arquivo de tarefas concluídas limpo com sucesso!', 'success');
+          } catch (err) {
+            console.error('Erro ao limpar tarefas arquivadas:', err);
+            showToast('Erro ao remover algumas tarefas arquivadas.', 'error');
+          }
         }
       });
     }
 
-    // Exportar Audit CSV
+    // Exportar CSV
     if (DOM.btnExportCSV) {
       DOM.btnExportCSV.addEventListener('click', () => {
         const headers = ['ID', 'Title', 'Project', 'Priority', 'Status', 'Completed', 'Due Date'];
@@ -1304,8 +1247,8 @@
           t.id,
           `"${(t.title || '').replace(/"/g, '""')}"`,
           `"${t.project || ''}"`,
-          t.priority,
-          t.status,
+          t.priority || 'medium',
+          t.status || 'in_progress',
           t.completed ? 'Yes' : 'No',
           `"${t.dueDate || ''}"`
         ]);
@@ -1313,7 +1256,7 @@
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement('a');
         link.setAttribute('href', encodedUri);
-        link.setAttribute('download', `taskflow_audit_${new Date().toISOString().slice(0, 10)}.csv`);
+        link.setAttribute('download', `taskflow_export_${new Date().toISOString().slice(0, 10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1323,45 +1266,47 @@
 
     // Atalhos Globais de Teclado
     window.addEventListener('keydown', e => {
-      // Tecla 'N' para Quick Add quando não estiver focando nenhum input
       if ((e.key === 'n' || e.key === 'N') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
         e.preventDefault();
         openCreateModal();
         return;
       }
-      // ⌘K ou Ctrl+K para foco na busca
       if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
-        DOM.topSearchInput.focus();
+        if (DOM.topSearchInput) DOM.topSearchInput.focus();
         return;
       }
-      // ESC para fechar Modal
       if (e.key === 'Escape') {
-        if (DOM.taskModalOverlay.classList.contains('open')) {
+        if (DOM.taskModalOverlay && DOM.taskModalOverlay.classList.contains('open')) {
           closeModal();
         }
-        if (DOM.confirmDeleteModal.style.display === 'flex') {
+        if (DOM.confirmDeleteModal && DOM.confirmDeleteModal.style.display === 'flex') {
           cancelDelete();
         }
       }
-      // ⌘+Enter ou Ctrl+Enter dentro do modal para salvar
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        if (DOM.taskModalOverlay.classList.contains('open')) {
+        if (DOM.taskModalOverlay && DOM.taskModalOverlay.classList.contains('open')) {
           e.preventDefault();
           handleSaveTaskFromModal();
         }
       }
     });
+
+    // Cleanup listener on unload
+    window.addEventListener('beforeunload', () => {
+      if (unsubscribeTasks) {
+        unsubscribeTasks();
+      }
+    });
   }
 
-  // 17. INICIALIZAÇÃO DA APLICAÇÃO
+  // 16. INICIALIZAÇÃO DA APLICAÇÃO
   function init() {
-    loadFromStorage();
     attachEventListeners();
     switchView('dashboard');
+    initFirestoreListener();
   }
 
-  // Inicializa quando o DOM estiver pronto
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

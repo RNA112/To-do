@@ -80,7 +80,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M9 12l2 2 4-4"/></svg>
             <span>My Tasks</span>
           </div>
-          <span class="nav-counter" id="countMyTasks">12</span>
+          <span class="nav-counter" id="countMyTasks">-</span>
         </a>
 
         <a href="#today" class="nav-item" data-nav="today">
@@ -88,7 +88,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
             <span>Today</span>
           </div>
-          <span class="nav-counter" id="countToday">5</span>
+          <span class="nav-counter" id="countToday">-</span>
         </a>
 
         <a href="#upcoming" class="nav-item" data-nav="upcoming">
@@ -96,7 +96,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="8" y1="14" x2="8.01" y2="14"></line><line x1="12" y1="14" x2="12.01" y2="14"></line><line x1="16" y1="14" x2="16.01" y2="14"></line></svg>
             <span>Upcoming</span>
           </div>
-          <span class="nav-counter" id="countUpcoming">7</span>
+          <span class="nav-counter" id="countUpcoming">-</span>
         </a>
 
         <a href="#completed" class="nav-item" data-nav="completed">
@@ -266,10 +266,10 @@
                 </div>
                 <div class="kpi-card-bottom">
                   <div class="kpi-big-number-row">
-                    <span class="kpi-number" id="kpiTotalNum">24</span>
+                    <span class="kpi-number" id="kpiTotalNum">-</span>
                     <span class="kpi-unit">total</span>
                   </div>
-                  <span class="kpi-pill pill-indigo">↗ +3 this week</span>
+                  <span class="kpi-pill pill-indigo">Sincronizado</span>
                 </div>
               </div>
 
@@ -283,11 +283,11 @@
                 </div>
                 <div class="kpi-card-bottom">
                   <div class="kpi-big-number-row">
-                    <span class="kpi-number" id="kpiCompletedNum">14</span>
+                    <span class="kpi-number" id="kpiCompletedNum">-</span>
                     <span class="kpi-unit">finished</span>
                   </div>
                   <div class="kpi-completion-badge">
-                    <span id="kpiCompletionPct">58%</span>
+                    <span id="kpiCompletionPct">0%</span>
                     <span>completion</span>
                   </div>
                 </div>
@@ -303,10 +303,10 @@
                 </div>
                 <div class="kpi-card-bottom">
                   <div class="kpi-big-number-row">
-                    <span class="kpi-number" id="kpiPendingNum">8</span>
+                    <span class="kpi-number" id="kpiPendingNum">-</span>
                     <span class="kpi-unit">active</span>
                   </div>
-                  <span class="kpi-pill pill-lavender" id="kpiInProgressText">3 in progress</span>
+                  <span class="kpi-pill pill-lavender" id="kpiInProgressText">tasks</span>
                 </div>
               </div>
 
@@ -320,8 +320,8 @@
                 </div>
                 <div class="kpi-card-bottom">
                   <div class="kpi-big-number-row">
-                    <span class="kpi-number" id="kpiOverdueNum">2</span>
-                    <span class="kpi-unit">overdue</span>
+                    <span class="kpi-number" id="kpiOverdueNum">-</span>
+                    <span class="kpi-unit">urgent</span>
                   </div>
                   <span class="kpi-pill pill-alert">Needs attention</span>
                 </div>
@@ -333,19 +333,19 @@
               <div class="filter-tab-buttons">
                 <button class="filter-tab-btn active" data-filter="all">
                   <span>All Tasks</span>
-                  <span class="filter-badge" id="badgeAllCount">8</span>
+                  <span class="filter-badge" id="badgeAllCount">-</span>
                 </button>
                 <button class="filter-tab-btn" data-filter="today">
                   <span>Today</span>
-                  <span class="filter-badge" id="badgeTodayCount">5</span>
+                  <span class="filter-badge" id="badgeTodayCount">-</span>
                 </button>
                 <button class="filter-tab-btn" data-filter="upcoming">
                   <span>Upcoming</span>
-                  <span class="filter-badge" id="badgeUpcomingCount">7</span>
+                  <span class="filter-badge" id="badgeUpcomingCount">-</span>
                 </button>
                 <button class="filter-tab-btn" data-filter="completed">
                   <span>Completed</span>
-                  <span class="filter-badge" id="badgeCompletedCount">14</span>
+                  <span class="filter-badge" id="badgeCompletedCount">-</span>
                 </button>
               </div>
 
@@ -410,13 +410,13 @@
                 <div class="radial-progress-wrap">
                   <svg class="radial-svg" width="84" height="84" viewBox="0 0 84 84">
                     <circle class="radial-track" cx="42" cy="42" r="34" stroke-width="7" fill="none"/>
-                    <circle class="radial-fill" id="productivityRadialFill" cx="42" cy="42" r="34" stroke-width="7" fill="none" stroke-dasharray="213.6" stroke-dashoffset="59.8"/>
+                    <circle class="radial-fill" id="productivityRadialFill" cx="42" cy="42" r="34" stroke-width="7" fill="none" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
                   </svg>
-                  <span class="radial-percentage-text" id="radialPercentageText">72%</span>
+                  <span class="radial-percentage-text" id="radialPercentageText">0%</span>
                 </div>
                 <div class="radial-caption-col">
-                  <span class="prod-headline" id="prodGoalsDoneText">4 of 6 goals done</span>
-                  <p class="prod-subtext">Outstanding momentum today. 2 more tasks to hit your daily velocity target.</p>
+                  <span class="prod-headline" id="prodGoalsDoneText">Carregando métricas...</span>
+                  <p class="prod-subtext">Acompanhe seu progresso e velocidade diária sincronizados em tempo real.</p>
                 </div>
               </div>
             </div>
@@ -754,7 +754,7 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4648d4" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                   </div>
                 </div>
-                <div class="mini-kpi-val"><strong id="editorMiniInProgressNum">7</strong> <span class="sub">/ 12 active</span></div>
+                <div class="mini-kpi-val"><strong id="editorMiniInProgressNum">-</strong></div>
               </div>
 
               <div class="mini-kpi-card">
@@ -764,7 +764,7 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                   </div>
                 </div>
-                <div class="mini-kpi-val"><strong id="editorMiniCriticalNum">2</strong> <span class="sub">due this week</span></div>
+                <div class="mini-kpi-val"><strong id="editorMiniCriticalNum">-</strong></div>
               </div>
 
               <div class="mini-kpi-card">
@@ -774,7 +774,7 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00885d" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
                   </div>
                 </div>
-                <div class="mini-kpi-val"><strong id="editorMiniCompletedNum">24</strong> <span class="sub-green">+18% vs last wk</span></div>
+                <div class="mini-kpi-val"><strong id="editorMiniCompletedNum">-</strong></div>
               </div>
             </div>
 
@@ -825,7 +825,7 @@
                     <option value="under_review">Under Review</option>
                   </select>
                 </div>
-                <span class="task-key-tag" id="drawerTaskKeyTag">#TSK-104</span>
+                <span class="task-key-tag" id="drawerTaskKeyTag">#---</span>
                 <button class="icon-btn-xs" title="Copy Key" id="btnCopyTaskKey" aria-label="Copiar chave da tarefa">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
@@ -1228,6 +1228,6 @@
 
   </div>
 
-  <script src="./script.js"></script>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>
